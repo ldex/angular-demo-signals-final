@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
-import { ApplicationConfig, provideZoneChangeDetection } from "@angular/core";
+import { ApplicationConfig } from "@angular/core";
 import {
   PreloadAllModules,
   provideRouter,
@@ -18,8 +18,7 @@ export const appProviders = [
     withComponentInputBinding(),
     withPreloading(PreloadAllModules),
     withViewTransitions()
-  ),
-  provideZoneChangeDetection()
+  )
 ];
 
 export const appConfig: ApplicationConfig = {
