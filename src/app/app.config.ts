@@ -17,7 +17,7 @@ export const appProviders = [
     routes,
     withComponentInputBinding(),
     withPreloading(PreloadAllModules),
-    withViewTransitions()
+    withViewTransitions(),
   )
 ];
 

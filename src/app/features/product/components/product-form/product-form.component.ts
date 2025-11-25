@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, inject, output, input, computed, effect } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,25 +12,14 @@ import { Product } from '../../../../models/product.model';
 export class ProductFormComponent {
   private fb = inject(FormBuilder);
 
-  @Input() set product(value: Product | null) {
-    if (value) {
-      this.isEditing = true;
-      this.productForm.patchValue({
-        title: value.title,
-        price: value.price,
-        description: value.description,
-        category: value.category,
-        image: value.image
-      });
-    }
-  }
-  @Input() isSubmitting = false;
+  product = input<Product | null>()
+  readonly isSubmitting = input(false);
 
-  @Output() save = new EventEmitter<Partial<Product>>();
-  @Output() cancel = new EventEmitter<void>();
+  readonly save = output<Partial<Product>>();
+  readonly cancel = output<void>();
 
   productForm: FormGroup;
-  isEditing = false;
+  isEditing = computed(() => !!this.product());
 
   constructor() {
     this.productForm = this.fb.group({
@@ -39,6 +28,19 @@ export class ProductFormComponent {
       description: ['', Validators.required],
       category: ['', Validators.required],
       image: ['', [Validators.required, Validators.pattern('https?://.+')]]
+    });
+
+    effect(() => {
+      const product = this.product();
+      if (product) {
+        this.productForm.patchValue({
+          title: product.title,
+          price: product.price,
+          description: product.description,
+          category: product.category,
+          image: product.image
+        });
+      }
     });
   }
 
@@ -49,6 +51,7 @@ export class ProductFormComponent {
   }
 
   onCancel(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.cancel.emit();
   }
 }
