@@ -5,11 +5,13 @@ import {
   provideRouter,
   withComponentInputBinding,
   withPreloading,
-  withViewTransitions
+  withViewTransitions,
 } from "@angular/router";
 import { routes } from "./app.routes";
 import { authInterceptor } from "./interceptors/auth.interceptor";
 import { loadingInterceptor } from "./interceptors/loading.interceptor";
+import { provideSignalFormsConfig } from "@angular/forms/signals";
+import { NG_STATUS_CLASSES } from "@angular/forms/signals/compat";
 
 export const appProviders = [
   provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor])),
@@ -17,12 +19,13 @@ export const appProviders = [
     routes,
     withComponentInputBinding(),
     withPreloading(PreloadAllModules),
-    withViewTransitions(),
-  )
+    withViewTransitions()
+  ),
+  provideSignalFormsConfig({
+    classes: NG_STATUS_CLASSES,
+  }),
 ];
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    ...appProviders,
-  ],
+  providers: [...appProviders],
 };
