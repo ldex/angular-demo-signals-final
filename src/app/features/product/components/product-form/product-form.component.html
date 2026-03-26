@@ -8,34 +8,34 @@
       {{isEditing() ? 'Edit' : 'Add'}} Product
     </h1>
 
-    <form (submit)="submitForm($event)" novalidate class="space-y-4">
+    <form [formRoot]="productForm" class="space-y-4">
       <div>
         <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-        <input type="text" id="title" [field]="productForm.title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+        <input type="text" id="title" [formField]="productForm.title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
                       focus:border-blue-500 focus:ring-blue-500">
       </div>
 
       <div>
         <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
-        <input type="number" id="price" [field]="productForm.price" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+        <input type="number" id="price" [formField]="productForm.price" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
                       focus:border-blue-500 focus:ring-blue-500">
       </div>
 
       <div>
         <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-        <textarea id="description" [field]="productForm.description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+        <textarea id="description" [formField]="productForm.description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
                          focus:border-blue-500 focus:ring-blue-500"></textarea>
       </div>
 
       <div>
         <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-        <input type="text" id="category" [field]="productForm.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+        <input type="text" id="category" [formField]="productForm.category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
                       focus:border-blue-500 focus:ring-blue-500">
       </div>
 
       <div>
         <label for="image" class="block text-sm font-medium text-gray-700">Image URL</label>
-        <input type="url" id="image" [field]="productForm.image" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
+        <input type="url" id="image" [formField]="productForm.image" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm
                       focus:border-blue-500 focus:ring-blue-500">
       </div>
 

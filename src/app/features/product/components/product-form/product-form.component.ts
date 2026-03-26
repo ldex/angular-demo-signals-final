@@ -1,20 +1,22 @@
-import { Component, inject, output, input, computed, effect, signal } from '@angular/core';
+import { Component, output, input, computed, effect, signal } from '@angular/core';
 import { Product } from '../../../../models/product.model';
 import {
   form,
   required,
   minLength,
-  Field,
   pattern,
   min,
   max,
   schema,
   submit,
+  FormField,
+  FormRoot,
+  FormOptions,
 } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-product-form',
-  imports: [Field],
+  imports: [FormField, FormRoot],
   templateUrl: './product-form.component.html'
 })
 export class ProductFormComponent {
@@ -27,6 +29,9 @@ export class ProductFormComponent {
 
   isEditing = computed(() => !!this.product());
 
+  // This is an alternative to using an effect to set the form data when the product input changes.
+  // It uses a linked signal to derive the form data directly from the product input, providing a default value when no product is provided.
+  //
   // protected readonly productData = linkedSignal({
   //   source: this.product,
   //   computation: () => {
@@ -81,18 +86,22 @@ export class ProductFormComponent {
     );
   });
 
-  protected readonly productForm = form(this.productData, this.productSchema);
+  protected readonly formOptions: FormOptions<Product> = {
+    submission: {
+      action: async (form) => {
+        const newProduct = form().value();
+        console.log('Product to save:', newProduct);
+        await this.save.emit(newProduct);
+      },
+      onInvalid: (form) => {
+        console.log('Form is invalid:', form().errors());
+      },
+      ignoreValidators: 'pending' // Optional: ignore pending async validators during submission
+    }
+  };
+
+  protected readonly productForm = form(this.productData, this.productSchema, this.formOptions);
   protected readonly disableSubmit = computed(() =>  this.productForm().invalid() || this.productForm().submitting())
-
-  protected submitForm(event: Event) {
-    event.preventDefault(); // Prevent page reload (default browser behavior)
-
-    submit(this.productForm, async (form) => {
-      const newProduct = form().value();
-      console.log('Product to save:', newProduct);
-      await this.save.emit(newProduct);
-    });
-  }
 
   constructor() {
     effect(() => {
@@ -104,7 +113,6 @@ export class ProductFormComponent {
   }
 
   onCancel(): void {
-    // TODO: The 'emit' function requires a mandatory void argument
-    this.cancel.emit();
+    this.cancel.emit(undefined);
   }
 }
